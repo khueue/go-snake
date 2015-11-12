@@ -4,28 +4,28 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-// Snake is a thingy
 type Snake struct {
-	X, Y int
+	Position  Point
 	Direction int
 }
 
-// GetX does cool stuff
-func (s *Snake) GetX() int {
-	return s.X
-}
-
-// Step does cool stuff
 func (s *Snake) Step() {
 	switch s.Direction {
-	case DirectionUp: s.Y -= 1
-	case DirectionDown: s.Y += 1
-	case DirectionLeft: s.X -= 2
-	default: s.X += 2
+	case DirectionUp:
+		s.Position.MoveUp(1)
+	case DirectionDown:
+		s.Position.MoveDown(1)
+	case DirectionLeft:
+		s.Position.MoveLeft(1)
+	default:
+		s.Position.MoveRight(1)
 	}
 }
 
-// Draw does cool stuff
-func (s *Snake) Draw() {
-	termbox.SetCell(s.X, s.Y, '*', termbox.ColorRed, termbox.ColorDefault)
+func (s *Snake) EatFood(food *Food) {
+	// Grow.
+}
+
+func (s *Snake) Render() {
+	termbox.SetCell(s.Position.X, s.Position.Y, '*', termbox.ColorRed, termbox.ColorDefault)
 }

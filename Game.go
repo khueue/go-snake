@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 	"time"
 )
 
@@ -8,11 +9,15 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-// Game is xxx
+import (
+	"github.com/khueue/go-snake/entity"
+)
+
+// Game is the book keeper of everything.
 type Game struct {
 }
 
-// Run is
+// Run creates and runs the game. Runs until user quits.
 func (g *Game) Run() {
 	err := termbox.Init()
 	if err != nil {
@@ -21,7 +26,11 @@ func (g *Game) Run() {
 	defer termbox.Close()
 	termbox.SetInputMode(termbox.InputEsc)
 
-	world := NewWorld()
+	rand.Seed(time.Now().UnixNano())
+
+	world := entity.World{}
+	world.Init()
+
 	quitChan := make(chan bool)
 	eventChan := make(chan termbox.Event)
 
@@ -51,22 +60,16 @@ func (g *Game) Run() {
 		}
 	}()
 
-	// Step the world.
+	// Advance the world.
 	go func() {
 		for {
 			world.Step()
 			termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
-			world.Draw()
+			world.Render()
 			termbox.Flush()
-			time.Sleep(time.Duration(1000000/10) * time.Microsecond)
+			time.Sleep(time.Duration(1000000/20) * time.Microsecond)
 		}
 	}()
-
-	// s := entities.Snake{X: 1, Y: 2}
-	// sp := entities.SnakePart{X: 10, Y: 20}
-	// const color = termbox.ColorDefault
-	// termbox.SetCell(s.GetX(), s.Y, 'S', color, color)
-	// termbox.SetCell(sp.X, sp.Y, 'P', color, color)
 
 	// Block until exit is requested.
 	<-quitChan

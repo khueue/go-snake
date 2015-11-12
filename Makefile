@@ -16,7 +16,7 @@ groom:
 	@- echo; echo "--- Linting ..."
 	${GOPATH}/bin/golint
 	@- echo; echo "--- Formatting ..."
-	go fmt
+	gofmt -e -s -w .
 	@- echo; echo "--- Vetting ..."
 	go vet
 	@# ${GOPATH}/bin/goimports -w .
