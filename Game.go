@@ -15,62 +15,78 @@ import (
 
 // Game is the book keeper of everything.
 type Game struct {
+	eventChan chan termbox.Event
+	quitChan  chan bool
+	world     entity.World
 }
 
-// Run creates and runs the game. Runs until user quits.
-func (g *Game) Run() {
+func (g *Game) init() {
 	err := termbox.Init()
 	if err != nil {
 		panic(err)
 	}
-	defer termbox.Close()
 	termbox.SetInputMode(termbox.InputEsc)
 
 	rand.Seed(time.Now().UnixNano())
 
-	world := entity.World{}
-	world.Init()
+	g.quitChan = make(chan bool)
+	g.eventChan = make(chan termbox.Event)
 
-	quitChan := make(chan bool)
-	eventChan := make(chan termbox.Event)
+	g.world = entity.World{}
+	g.world.Init()
+}
 
-	// Poll for terminal events.
-	go func() {
-		for {
-			event := termbox.PollEvent()
-			eventChan <- event
-		}
-	}()
+func (g *Game) destroy() {
+	termbox.Close()
+}
 
-	// React to terminal events.
-	go func() {
-		for {
-			select {
-			case event := <-eventChan:
-				switch event.Type {
-				case termbox.EventKey:
-					switch event.Key {
-					case termbox.KeyEsc:
-						quitChan <- true
-					default:
-						world.ProcessEvent(event)
-					}
+// Run creates and runs the game. Runs until user quits.
+func (g *Game) Run() {
+	g.init()
+	defer g.destroy()
+
+	go g.pollForEvents()
+	go g.handleEvents()
+	go g.runGameLoop()
+
+	g.waitForQuit()
+
+}
+
+func (g *Game) waitForQuit() {
+	<-g.quitChan
+}
+
+func (g *Game) pollForEvents() {
+	for {
+		event := termbox.PollEvent()
+		g.eventChan <- event
+	}
+}
+
+func (g *Game) handleEvents() {
+	for {
+		select {
+		case event := <-g.eventChan:
+			switch event.Type {
+			case termbox.EventKey:
+				switch event.Key {
+				case termbox.KeyEsc:
+					g.quitChan <- true
+				default:
+					g.world.ProcessEvent(event)
 				}
 			}
 		}
-	}()
+	}
+}
 
-	// Advance the world.
-	go func() {
-		for {
-			world.Step()
-			termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
-			world.Render()
-			termbox.Flush()
-			time.Sleep(time.Duration(1000000/20) * time.Microsecond)
-		}
-	}()
-
-	// Block until exit is requested.
-	<-quitChan
+func (g *Game) runGameLoop() {
+	for {
+		g.world.Step()
+		termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
+		g.world.Render()
+		termbox.Flush()
+		time.Sleep(time.Duration(1000000/20) * time.Microsecond)
+	}
 }

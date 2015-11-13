@@ -19,6 +19,6 @@ func (f *Food) At(point Point) bool {
 
 func (f *Food) Render() {
 	if !f.Eaten {
-		termbox.SetCell(f.Position.X, f.Position.Y, '$', termbox.ColorYellow, termbox.ColorDefault)
+		termbox.SetCell(f.Position.X, f.Position.Y, '$', termbox.ColorGreen, termbox.ColorDefault)
 	}
 }
