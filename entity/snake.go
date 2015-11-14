@@ -6,7 +6,7 @@ import (
 
 type Snake struct {
 	Position  Point
-	Direction int
+	Direction Direction
 }
 
 func (s *Snake) Step() {

@@ -11,7 +11,7 @@ clean:
 	go clean -x -i
 
 build:
-	@- echo; echo "--- Building and installing ..."
+	@- echo; echo "--- Building ..."
 	env GODEBUG="" time go install -gcflags="-m"
 
 test: build
