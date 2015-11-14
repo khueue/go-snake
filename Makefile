@@ -1,22 +1,29 @@
-.PHONY: default run groom build
+.PHONY: default run groom build test setup
 
-default: build run
+default: build groom run
 
 run: build
 	@- echo; echo "--- Running ..."
-	${GOPATH}/bin/go-snake
+	env GODEBUG="gctrace=1" ${GOPATH}/bin/go-snake > logs/run.stdout.log 2> logs/run.stderr.log
 
-build: groom
-	@#- echo; echo "--- Testing ..."
-	@# go test -v
+build:
 	@- echo; echo "--- Building and installing ..."
-	go install -p 2 -gcflags="-m"
+	env GODEBUG="" go install -gcflags="-m"
 
-groom:
+test: build
+	@- echo; echo "--- Testing ..."
+	go test -v -cover
+
+groom: setup
 	@- echo; echo "--- Linting ..."
 	${GOPATH}/bin/golint
 	@- echo; echo "--- Formatting ..."
 	gofmt -e -s -w .
 	@- echo; echo "--- Vetting ..."
-	go vet
+	go tool vet -v .
+	@- echo; echo "--- Fixing ..."
+	go tool fix .
 	@# ${GOPATH}/bin/goimports -w .
+
+setup:
+	@- mkdir -p logs
