@@ -13,7 +13,7 @@ import (
 	"github.com/khueue/go-snake/entity"
 )
 
-// Game is the book keeper of everything.
+// Game is the admin of everything.
 type Game struct {
 	eventChan chan termbox.Event
 	quitChan  chan bool
@@ -53,10 +53,6 @@ func (g *Game) Run() {
 
 }
 
-func (g *Game) waitForQuit() {
-	<-g.quitChan
-}
-
 func (g *Game) pollForEvents() {
 	for {
 		event := termbox.PollEvent()
@@ -89,4 +85,8 @@ func (g *Game) runGameLoop() {
 		termbox.Flush()
 		time.Sleep(time.Duration(1000000/20) * time.Microsecond)
 	}
+}
+
+func (g *Game) waitForQuit() {
+	<-g.quitChan
 }
