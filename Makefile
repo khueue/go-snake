@@ -1,4 +1,4 @@
-.PHONY: default run groom build test setup
+.PHONY: default clean run groom build test setup
 
 default: build groom run
 
@@ -6,9 +6,13 @@ run: build
 	@- echo; echo "--- Running ..."
 	env GODEBUG="gctrace=1" ${GOPATH}/bin/go-snake > logs/run.stdout.log 2> logs/run.stderr.log
 
+clean:
+	@- echo; echo "--- Cleaning ..."
+	go clean -x -i
+
 build:
 	@- echo; echo "--- Building and installing ..."
-	env GODEBUG="" go install -gcflags="-m"
+	env GODEBUG="" time go install -gcflags="-m"
 
 test: build
 	@- echo; echo "--- Testing ..."
