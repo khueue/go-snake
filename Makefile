@@ -1,4 +1,4 @@
-.PHONY: default clean run groom build test
+.PHONY: default clean run groom lint build test
 
 default: groom build lint run
 
