@@ -1,8 +1,8 @@
-.PHONY: default clean run groom build test setup
+.PHONY: default clean run groom build test
 
-default: build groom run
+default: groom build groom run
 
-run: build
+run:
 	@- echo; echo "--- Running ..."
 	env GODEBUG="gctrace=1" ${GOPATH}/bin/go-snake > logs/run.stdout.log 2> logs/run.stderr.log
 
@@ -14,20 +14,17 @@ build:
 	@- echo; echo "--- Building ..."
 	env GODEBUG="" time go install -gcflags="-m"
 
-test: build
+test:
 	@- echo; echo "--- Testing ..."
 	go test -v -cover
 
-groom: setup
+groom:
+	@- mkdir -p logs
+	@- echo; echo "--- Fixing formatting, imports and returns ..."
+	${GOPATH}/bin/goreturns -w -l .
 	@- echo; echo "--- Linting ..."
 	${GOPATH}/bin/golint
-	@- echo; echo "--- Formatting ..."
-	gofmt -e -s -w .
 	@- echo; echo "--- Vetting ..."
 	go tool vet -v .
 	@- echo; echo "--- Fixing ..."
 	go tool fix .
-	@# ${GOPATH}/bin/goimports -w .
-
-setup:
-	@- mkdir -p logs
