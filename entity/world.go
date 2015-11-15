@@ -16,16 +16,18 @@ type World struct {
 
 // Init xxx
 func (w *World) Init() {
-	w.player = Snake{
+	w.player = Snake{}
+	w.player.Attach(&SnakePart{
 		Position: Point{
-			X: 1,
-			Y: 1,
+			X: 10,
+			Y: 10,
 		},
-		Direction: DirectionDown,
-	}
+		NextDirection: DirectionDown,
+	})
 	w.foods = []*Food{}
-	w.spawnFood()
-	w.spawnFood()
+	for i := 0; i < 10; i++ {
+		w.spawnFood()
+	}
 }
 
 func (w *World) spawnFood() {
@@ -48,21 +50,13 @@ func (w *World) ProcessEvent(event *termbox.Event) {
 	case termbox.EventKey:
 		switch event.Key {
 		case termbox.KeyArrowUp:
-			if w.player.Direction != DirectionDown {
-				w.player.Direction = DirectionUp
-			}
+			w.player.ChangeDirection(DirectionUp)
 		case termbox.KeyArrowDown:
-			if w.player.Direction != DirectionUp {
-				w.player.Direction = DirectionDown
-			}
+			w.player.ChangeDirection(DirectionDown)
 		case termbox.KeyArrowLeft:
-			if w.player.Direction != DirectionRight {
-				w.player.Direction = DirectionLeft
-			}
+			w.player.ChangeDirection(DirectionLeft)
 		case termbox.KeyArrowRight:
-			if w.player.Direction != DirectionLeft {
-				w.player.Direction = DirectionRight
-			}
+			w.player.ChangeDirection(DirectionRight)
 		}
 	}
 }
@@ -72,7 +66,7 @@ func (w *World) Step() {
 	w.player.Step()
 
 	for i, food := range w.foods {
-		if food.At(w.player.Position) {
+		if food.At(w.player.Position()) {
 			w.player.EatFood(food)
 			food.Kill()
 			w.removeFoodAtIndex(i)
