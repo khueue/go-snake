@@ -15,7 +15,7 @@ import (
 
 // Game is the admin of everything.
 type Game struct {
-	eventChan chan termbox.Event
+	eventChan chan *termbox.Event
 	quitChan  chan bool
 	world     entity.World
 }
@@ -30,7 +30,7 @@ func (g *Game) init() {
 	rand.Seed(time.Now().UnixNano())
 
 	g.quitChan = make(chan bool)
-	g.eventChan = make(chan termbox.Event)
+	g.eventChan = make(chan *termbox.Event)
 
 	g.world = entity.World{}
 	g.world.Init()
@@ -56,7 +56,7 @@ func (g *Game) Run() {
 func (g *Game) pollForEvents() {
 	for {
 		event := termbox.PollEvent()
-		g.eventChan <- event
+		g.eventChan <- &event
 	}
 }
 

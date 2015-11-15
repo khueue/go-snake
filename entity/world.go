@@ -43,7 +43,7 @@ func (w *World) removeFoodAtIndex(i int) {
 }
 
 // ProcessEvent xxx
-func (w *World) ProcessEvent(event termbox.Event) {
+func (w *World) ProcessEvent(event *termbox.Event) {
 	switch event.Type {
 	case termbox.EventKey:
 		switch event.Key {
