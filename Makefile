@@ -23,7 +23,7 @@ groom:
 	@- echo; echo "--- Fixing formatting, imports and returns ..."
 	${GOPATH}/bin/goreturns -w -l .
 	@- echo; echo "--- Linting ..."
-	${GOPATH}/bin/golint
+	${GOPATH}/bin/golint ./...
 	@- echo; echo "--- Vetting ..."
 	go tool vet -v .
 	@- echo; echo "--- Fixing ..."

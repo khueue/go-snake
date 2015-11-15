@@ -8,11 +8,13 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
+// World xxx
 type World struct {
 	player Snake
 	foods  []*Food
 }
 
+// Init xxx
 func (w *World) Init() {
 	w.player = Snake{
 		Position: Point{
@@ -40,6 +42,7 @@ func (w *World) removeFoodAtIndex(i int) {
 	w.foods = append(w.foods[:i], w.foods[i+1:]...)
 }
 
+// ProcessEvent xxx
 func (w *World) ProcessEvent(event termbox.Event) {
 	switch event.Type {
 	case termbox.EventKey:
@@ -64,6 +67,7 @@ func (w *World) ProcessEvent(event termbox.Event) {
 	}
 }
 
+// Step xxx
 func (w *World) Step() {
 	w.player.Step()
 
@@ -77,6 +81,7 @@ func (w *World) Step() {
 	}
 }
 
+// Render xxx
 func (w *World) Render() {
 	w.player.Render()
 	for _, food := range w.foods {

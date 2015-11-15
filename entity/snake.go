@@ -4,11 +4,13 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
+// Snake xxx
 type Snake struct {
 	Position  Point
 	Direction Direction
 }
 
+// Step xxx
 func (s *Snake) Step() {
 	switch s.Direction {
 	case DirectionUp:
@@ -22,10 +24,12 @@ func (s *Snake) Step() {
 	}
 }
 
+// EatFood xxx
 func (s *Snake) EatFood(food *Food) {
 	// Grow.
 }
 
+// Render xxx
 func (s *Snake) Render() {
 	termbox.SetCell(s.Position.X, s.Position.Y, '*', termbox.ColorRed, termbox.ColorDefault)
 }
