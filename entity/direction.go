@@ -5,7 +5,8 @@ type Direction int
 
 // Values for Direction.
 const (
-	DirectionUp Direction = iota
+	DirectionNone Direction = iota
+	DirectionUp
 	DirectionDown
 	DirectionLeft
 	DirectionRight

@@ -78,12 +78,13 @@ func (g *Game) handleEvents() {
 }
 
 func (g *Game) runGameLoop() {
+	stepRate := time.Duration(1000/20) * time.Millisecond
 	for {
 		g.world.Step()
 		termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
 		g.world.Render()
 		termbox.Flush()
-		time.Sleep(time.Duration(1000000/20) * time.Microsecond)
+		time.Sleep(stepRate)
 	}
 }
 

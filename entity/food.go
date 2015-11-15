@@ -7,6 +7,7 @@ import (
 // Food is an object that a snake can eat.
 type Food struct {
 	Position Point
+	Energy   int
 	Eaten    bool
 }
 

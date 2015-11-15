@@ -22,7 +22,8 @@ func (w *World) Init() {
 			X: 10,
 			Y: 10,
 		},
-		NextDirection: DirectionDown,
+		PrevDirection: DirectionNone,
+		NextDirection: DirectionRight,
 	})
 	w.foods = []*Food{}
 	for i := 0; i < 10; i++ {
@@ -36,6 +37,7 @@ func (w *World) spawnFood() {
 			X: rand.Intn(80),
 			Y: rand.Intn(40),
 		},
+		Energy: 2,
 	}
 	w.foods = append(w.foods, food)
 }

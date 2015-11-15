@@ -29,17 +29,19 @@ func (s *Snake) Step() {
 }
 
 func (part *SnakePart) step(ahead *SnakePart) {
-	switch part.NextDirection {
-	case DirectionUp:
-		part.Position.MoveUp(1)
-	case DirectionDown:
-		part.Position.MoveDown(1)
-	case DirectionLeft:
-		part.Position.MoveLeft(1)
-	case DirectionRight:
-		part.Position.MoveRight(1)
-	default:
-		panic("Should never happen")
+	if part.NextDirection != DirectionNone {
+		switch part.NextDirection {
+		case DirectionUp:
+			part.Position.MoveUp(1)
+		case DirectionDown:
+			part.Position.MoveDown(1)
+		case DirectionLeft:
+			part.Position.MoveLeft(1)
+		case DirectionRight:
+			part.Position.MoveRight(1)
+		default:
+			panic("Should never happen")
+		}
 	}
 
 	part.PrevDirection = part.NextDirection
@@ -78,30 +80,18 @@ func (s *Snake) Position() Point {
 
 // EatFood xxx
 func (s *Snake) EatFood(food *Food) {
-	lastPart := s.Parts[len(s.Parts)-1]
-	var x, y int
-	switch lastPart.PrevDirection {
-	case DirectionUp:
-		x = lastPart.Position.X
-		y = lastPart.Position.Y + 1
-	case DirectionDown:
-		x = lastPart.Position.X
-		y = lastPart.Position.Y - 1
-	case DirectionLeft:
-		x = lastPart.Position.X + 1
-		y = lastPart.Position.Y
-	case DirectionRight:
-		x = lastPart.Position.X - 1
-		y = lastPart.Position.Y
+	for i := 0; i < food.Energy; i++ {
+		lastPart := s.Parts[len(s.Parts)-1]
+		newPart := &SnakePart{
+			Position: Point{
+				X: lastPart.Position.X,
+				Y: lastPart.Position.Y,
+			},
+			PrevDirection: DirectionNone,
+			NextDirection: DirectionNone,
+		}
+		s.Attach(newPart)
 	}
-	newPart := &SnakePart{
-		Position: Point{
-			X: x,
-			Y: y,
-		},
-		NextDirection: lastPart.PrevDirection,
-	}
-	s.Attach(newPart)
 }
 
 // Attach xxx
