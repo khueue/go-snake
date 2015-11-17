@@ -2,9 +2,8 @@ package entity
 
 import (
 	"math/rand"
-)
 
-import (
+	"github.com/khueue/go-snake/config"
 	"github.com/nsf/termbox-go"
 )
 
@@ -16,7 +15,9 @@ type World struct {
 
 // Init xxx
 func (w *World) Init() {
-	w.player = Snake{}
+	w.player = Snake{
+		Speed: 1,
+	}
 	w.player.Attach(&SnakePart{
 		Position: Point{
 			X: 10,
@@ -26,7 +27,7 @@ func (w *World) Init() {
 		NextDirection: DirectionRight,
 	})
 	w.foods = []*Food{}
-	for i := 0; i < 10; i++ {
+	for i := 0; i < config.StartingFood; i++ {
 		w.spawnFood()
 	}
 }
@@ -34,10 +35,10 @@ func (w *World) Init() {
 func (w *World) spawnFood() {
 	food := &Food{
 		Position: Point{
-			X: rand.Intn(80),
+			X: rand.Intn(100),
 			Y: rand.Intn(40),
 		},
-		Energy: 2,
+		Energy: config.FoodEnergy,
 	}
 	w.foods = append(w.foods, food)
 }

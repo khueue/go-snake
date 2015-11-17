@@ -19,7 +19,6 @@ test:
 	go test -v -cover
 
 groom:
-	@- mkdir -p logs
 	@- echo; echo "--- Fixing formatting, imports and returns ..."
 	${GOPATH}/bin/goreturns -w -l .
 

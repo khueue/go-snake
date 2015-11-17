@@ -1,16 +1,12 @@
-package main
+package framework
 
 import (
 	"math/rand"
 	"time"
-)
 
-import (
-	"github.com/nsf/termbox-go"
-)
-
-import (
+	"github.com/khueue/go-snake/config"
 	"github.com/khueue/go-snake/entity"
+	"github.com/nsf/termbox-go"
 )
 
 // Game is the admin of everything.
@@ -78,13 +74,13 @@ func (g *Game) handleEvents() {
 }
 
 func (g *Game) runGameLoop() {
-	stepRate := time.Duration(1000/20) * time.Millisecond
+	pauseTime := time.Duration(1000/config.FPS) * time.Millisecond
 	for {
 		g.world.Step()
 		termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
 		g.world.Render()
 		termbox.Flush()
-		time.Sleep(stepRate)
+		time.Sleep(pauseTime)
 	}
 }
 

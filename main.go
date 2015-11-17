@@ -1,6 +1,8 @@
 package main
 
+import "github.com/khueue/go-snake/framework"
+
 func main() {
-	game := Game{}
+	game := framework.Game{}
 	game.Run()
 }

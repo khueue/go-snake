@@ -7,7 +7,26 @@ import (
 // Snake xxx
 type Snake struct {
 	Parts []*SnakePart
+	Speed int
 }
+
+// type SnakeParts []*SnakePart
+//
+// func (b *SnakeParts) First() *SnakePart {
+// 	return (*b)[0]
+// }
+//
+// func (b *SnakeParts) Tail() SnakeParts {
+// 	return (*b)[1:]
+// }
+//
+// func (b *SnakeParts) Last() *SnakePart {
+// 	return (*b)[len(*b)-1]
+// }
+//
+// func (b *SnakeParts) Attach(part *SnakePart) {
+// 	*b = append(*b, part)
+// }
 
 // SnakePart xxx
 type SnakePart struct {
@@ -19,26 +38,26 @@ type SnakePart struct {
 // Step xxx
 func (s *Snake) Step() {
 	head := s.Parts[0]
-	head.step(nil)
+	head.step(s.Speed, nil)
 
 	next := head
 	for _, part := range s.Parts[1:] {
-		part.step(next)
+		part.step(s.Speed, next)
 		next = part
 	}
 }
 
-func (part *SnakePart) step(ahead *SnakePart) {
+func (part *SnakePart) step(speed int, ahead *SnakePart) {
 	if part.NextDirection != DirectionNone {
 		switch part.NextDirection {
 		case DirectionUp:
-			part.Position.MoveUp(1)
+			part.Position.MoveUp(speed)
 		case DirectionDown:
-			part.Position.MoveDown(1)
+			part.Position.MoveDown(speed)
 		case DirectionLeft:
-			part.Position.MoveLeft(1)
+			part.Position.MoveLeft(speed)
 		case DirectionRight:
-			part.Position.MoveRight(1)
+			part.Position.MoveRight(speed)
 		default:
 			panic("Should never happen")
 		}
@@ -101,9 +120,17 @@ func (s *Snake) Attach(part *SnakePart) {
 
 // Render xxx
 func (s *Snake) Render() {
-	head := s.Parts[0]
-	color := termbox.ColorYellow
 	var face rune
+
+	for i := len(s.Parts) - 1; i >= 1; i-- {
+		part := s.Parts[i]
+		face = 'o'
+		color := termbox.ColorYellow
+		termbox.SetCell(part.Position.X, part.Position.Y, face, color, termbox.ColorDefault)
+	}
+
+	color := termbox.ColorYellow
+	head := s.Parts[0]
 	switch head.NextDirection {
 	case DirectionUp:
 		face = '^'
@@ -115,10 +142,4 @@ func (s *Snake) Render() {
 		face = '>'
 	}
 	termbox.SetCell(head.Position.X, head.Position.Y, face, color, termbox.ColorDefault)
-
-	for _, part := range s.Parts[1:] {
-		face = 'o'
-		color = termbox.ColorYellow
-		termbox.SetCell(part.Position.X, part.Position.Y, face, color, termbox.ColorDefault)
-	}
 }
