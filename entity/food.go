@@ -24,6 +24,6 @@ func (f *Food) At(point Point) bool {
 // Render draws the food on screen.
 func (f *Food) Render() {
 	if !f.Eaten {
-		termbox.SetCell(f.Position.X, f.Position.Y, '$', termbox.ColorGreen, termbox.ColorDefault)
+		termbox.SetCell(int(f.Position.X), int(f.Position.Y), '$', termbox.ColorGreen, termbox.ColorDefault)
 	}
 }

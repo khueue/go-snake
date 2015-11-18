@@ -35,8 +35,8 @@ func (w *World) Init() {
 func (w *World) spawnFood() {
 	food := &Food{
 		Position: Point{
-			X: rand.Intn(100),
-			Y: rand.Intn(40),
+			X: float64(rand.Intn(100)),
+			Y: float64(rand.Intn(40)),
 		},
 		Energy: config.FoodEnergy,
 	}
@@ -48,7 +48,7 @@ func (w *World) removeFoodAtIndex(i int) {
 }
 
 // ProcessEvent xxx
-func (w *World) ProcessEvent(event *termbox.Event) {
+func (w *World) ProcessEvent(event termbox.Event) {
 	switch event.Type {
 	case termbox.EventKey:
 		switch event.Key {

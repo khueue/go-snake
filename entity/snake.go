@@ -49,17 +49,19 @@ func (s *Snake) Step() {
 
 func (part *SnakePart) step(speed int, ahead *SnakePart) {
 	if part.NextDirection != DirectionNone {
-		switch part.NextDirection {
-		case DirectionUp:
-			part.Position.MoveUp(speed)
-		case DirectionDown:
-			part.Position.MoveDown(speed)
-		case DirectionLeft:
-			part.Position.MoveLeft(speed)
-		case DirectionRight:
-			part.Position.MoveRight(speed)
-		default:
-			panic("Should never happen")
+		for i := 0; i < speed; i++ {
+			switch part.NextDirection {
+			case DirectionUp:
+				part.Position.MoveUp(1)
+			case DirectionDown:
+				part.Position.MoveDown(1)
+			case DirectionLeft:
+				part.Position.MoveLeft(1)
+			case DirectionRight:
+				part.Position.MoveRight(1)
+			default:
+				panic("should never happen")
+			}
 		}
 	}
 
@@ -126,7 +128,7 @@ func (s *Snake) Render() {
 		part := s.Parts[i]
 		face = 'o'
 		color := termbox.ColorYellow
-		termbox.SetCell(part.Position.X, part.Position.Y, face, color, termbox.ColorDefault)
+		termbox.SetCell(int(part.Position.X), int(part.Position.Y), face, color, termbox.ColorDefault)
 	}
 
 	color := termbox.ColorYellow
@@ -141,5 +143,5 @@ func (s *Snake) Render() {
 	case DirectionRight:
 		face = '>'
 	}
-	termbox.SetCell(head.Position.X, head.Position.Y, face, color, termbox.ColorDefault)
+	termbox.SetCell(int(head.Position.X), int(head.Position.Y), face, color, termbox.ColorDefault)
 }
