@@ -1,73 +1,54 @@
 package entity
 
-import (
-	"github.com/nsf/termbox-go"
-)
+import "github.com/nsf/termbox-go"
 
 // Snake xxx
 type Snake struct {
-	Parts []*SnakePart
-	Speed int
+	Parts     []*SnakePart
+	VelocityX float64
+	VelocityY float64
 }
-
-// type SnakeParts []*SnakePart
-//
-// func (b *SnakeParts) First() *SnakePart {
-// 	return (*b)[0]
-// }
-//
-// func (b *SnakeParts) Tail() SnakeParts {
-// 	return (*b)[1:]
-// }
-//
-// func (b *SnakeParts) Last() *SnakePart {
-// 	return (*b)[len(*b)-1]
-// }
-//
-// func (b *SnakeParts) Attach(part *SnakePart) {
-// 	*b = append(*b, part)
-// }
 
 // SnakePart xxx
 type SnakePart struct {
 	Position      Point
-	PrevDirection Direction
+	CurrDirection Direction
 	NextDirection Direction
 }
 
 // Step xxx
-func (s *Snake) Step() {
+func (s *Snake) Step(dt float64) {
 	head := s.Parts[0]
-	head.step(s.Speed, nil)
+	head.step(s.VelocityX, dt, nil)
 
 	next := head
 	for _, part := range s.Parts[1:] {
-		part.step(s.Speed, next)
+		part.step(s.VelocityX, dt, next)
 		next = part
 	}
 }
-
-func (part *SnakePart) step(speed int, ahead *SnakePart) {
-	if part.NextDirection != DirectionNone {
-		for i := 0; i < speed; i++ {
+func (part *SnakePart) step(velocity float64, dt float64, ahead *SnakePart) {
+	distance := velocity * dt
+	if ahead == nil || ahead != nil && !part.Position.At(ahead.Position) {
+		if part.NextDirection != DirectionNone {
 			switch part.NextDirection {
 			case DirectionUp:
-				part.Position.MoveUp(1)
+				part.Position.MoveUp(distance)
 			case DirectionDown:
-				part.Position.MoveDown(1)
+				part.Position.MoveDown(distance)
 			case DirectionLeft:
-				part.Position.MoveLeft(1)
+				part.Position.MoveLeft(distance)
 			case DirectionRight:
-				part.Position.MoveRight(1)
+				part.Position.MoveRight(distance)
 			default:
 				panic("should never happen")
 			}
 		}
 	}
 
-	part.PrevDirection = part.NextDirection
+	part.CurrDirection = part.NextDirection
 	if ahead != nil {
-		part.NextDirection = ahead.PrevDirection
+		part.NextDirection = ahead.CurrDirection
 	}
 }
 
@@ -76,19 +57,19 @@ func (s *Snake) ChangeDirection(nextDirection Direction) {
 	head := s.Parts[0]
 	switch nextDirection {
 	case DirectionUp:
-		if head.PrevDirection != DirectionDown {
+		if head.CurrDirection != DirectionDown {
 			head.NextDirection = DirectionUp
 		}
 	case DirectionDown:
-		if head.PrevDirection != DirectionUp {
+		if head.CurrDirection != DirectionUp {
 			head.NextDirection = DirectionDown
 		}
 	case DirectionLeft:
-		if head.PrevDirection != DirectionRight {
+		if head.CurrDirection != DirectionRight {
 			head.NextDirection = DirectionLeft
 		}
 	case DirectionRight:
-		if head.PrevDirection != DirectionLeft {
+		if head.CurrDirection != DirectionLeft {
 			head.NextDirection = DirectionRight
 		}
 	}
@@ -108,7 +89,7 @@ func (s *Snake) EatFood(food *Food) {
 				X: lastPart.Position.X,
 				Y: lastPart.Position.Y,
 			},
-			PrevDirection: DirectionNone,
+			CurrDirection: DirectionRight,
 			NextDirection: DirectionNone,
 		}
 		s.Attach(newPart)

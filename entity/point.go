@@ -11,21 +11,21 @@ func (p *Point) At(p2 Point) bool {
 }
 
 // MoveRight xxx
-func (p *Point) MoveRight(steps int) {
-	p.X += float64(steps)
+func (p *Point) MoveRight(distance float64) {
+	p.X += distance
 }
 
 // MoveLeft xxx
-func (p *Point) MoveLeft(steps int) {
-	p.X -= float64(steps)
+func (p *Point) MoveLeft(distance float64) {
+	p.X -= distance
 }
 
 // MoveUp xxx
-func (p *Point) MoveUp(steps int) {
-	p.Y -= float64(steps)
+func (p *Point) MoveUp(distance float64) {
+	p.Y -= distance
 }
 
 // MoveDown xxx
-func (p *Point) MoveDown(steps int) {
-	p.Y += float64(steps)
+func (p *Point) MoveDown(distance float64) {
+	p.Y += distance
 }

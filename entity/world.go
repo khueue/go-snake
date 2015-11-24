@@ -16,14 +16,15 @@ type World struct {
 // Init xxx
 func (w *World) Init() {
 	w.player = Snake{
-		Speed: 1,
+		VelocityX: 20.0,
+		VelocityY: 20.0,
 	}
 	w.player.Attach(&SnakePart{
 		Position: Point{
 			X: 10,
 			Y: 10,
 		},
-		PrevDirection: DirectionNone,
+		CurrDirection: DirectionRight,
 		NextDirection: DirectionRight,
 	})
 	w.foods = []*Food{}
@@ -65,8 +66,8 @@ func (w *World) ProcessEvent(event termbox.Event) {
 }
 
 // Step xxx
-func (w *World) Step() {
-	w.player.Step()
+func (w *World) Step(dt float64) {
+	w.player.Step(dt)
 
 	for i, food := range w.foods {
 		if food.At(w.player.Position()) {

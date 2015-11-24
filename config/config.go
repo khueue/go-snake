@@ -2,7 +2,8 @@ package config
 
 // Various settings.
 const (
-	FPS          int = 15
-	FoodEnergy   int = 2
-	StartingFood int = 10
+	TargetFPS    int     = 60
+	SpeedFactor  float64 = 1
+	FoodEnergy   int     = 2
+	StartingFood int     = 30
 )

@@ -73,14 +73,48 @@ func (g *Game) handleEvents() {
 	}
 }
 
+func nowSeconds() float64 {
+	return float64(time.Now().UnixNano()) / (1000 * 1000 * 1000)
+}
+
 func (g *Game) runGameLoop() {
-	pauseTime := time.Duration(1000/config.FPS) * time.Millisecond
+	termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
+
+	t := 0.0
+	const dt float64 = 0.001
+
+	currentTime := nowSeconds()
+	accumulator := 0.0
+
 	for {
-		g.world.Step()
-		termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
+		newTime := nowSeconds()
+		frameTime := newTime - currentTime
+		currentTime = newTime
+
+		accumulator += frameTime
+
+		// Step logic as many times as we have dt.
+		steps := 0
+		for accumulator >= dt {
+			fmt.Println("Step, acc:", accumulator)
+			g.world.Step(dt * config.SpeedFactor)
+			accumulator -= dt
+			t += dt
+			steps++
+		}
+
+		// Cap FPS.
+		steppingTime := (nowSeconds() - currentTime) * 1000000
+		fmt.Println(steps, "steps took microseconds", steppingTime)
+		sleepTime := time.Duration(1000000.0/float64(config.TargetFPS)-steppingTime) * time.Microsecond
+		fmt.Println("Will sleep for", sleepTime)
+		time.Sleep(sleepTime)
+
+		// Render to screen and prepare for next logic step.
+		fmt.Println("Render")
 		g.world.Render()
 		termbox.Flush()
-		time.Sleep(pauseTime)
+		termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
 	}
 }
 
