@@ -19,7 +19,7 @@ test:
 	go test -v -cover
 
 groom:
-	@- echo; echo "--- Fixing formatting, imports and returns ..."
+	@- echo; echo "--- Formatting, fixing imports and returns ..."
 	${GOPATH}/bin/goreturns -w -l .
 
 lint:

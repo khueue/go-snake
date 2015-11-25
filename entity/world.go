@@ -16,7 +16,7 @@ type World struct {
 // Init xxx
 func (w *World) Init() {
 	w.player = Snake{
-		Speed: 1,
+		Velocity: 1,
 	}
 	w.player.Attach(&SnakePart{
 		Position: Point{
@@ -35,8 +35,8 @@ func (w *World) Init() {
 func (w *World) spawnFood() {
 	food := &Food{
 		Position: Point{
-			X: float64(rand.Intn(100)),
-			Y: float64(rand.Intn(40)),
+			X: rand.Intn(100),
+			Y: rand.Intn(40),
 		},
 		Energy: config.FoodEnergy,
 	}

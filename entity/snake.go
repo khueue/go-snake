@@ -6,8 +6,8 @@ import (
 
 // Snake xxx
 type Snake struct {
-	Parts []*SnakePart
-	Speed int
+	Parts    []*SnakePart
+	Velocity int
 }
 
 // type SnakeParts []*SnakePart
@@ -38,18 +38,18 @@ type SnakePart struct {
 // Step xxx
 func (s *Snake) Step() {
 	head := s.Parts[0]
-	head.step(s.Speed, nil)
+	head.step(s.Velocity, nil)
 
 	next := head
 	for _, part := range s.Parts[1:] {
-		part.step(s.Speed, next)
+		part.step(s.Velocity, next)
 		next = part
 	}
 }
 
-func (part *SnakePart) step(speed int, ahead *SnakePart) {
+func (part *SnakePart) step(velocity int, ahead *SnakePart) {
 	if part.NextDirection != DirectionNone {
-		for i := 0; i < speed; i++ {
+		for i := 0; i < velocity; i++ {
 			switch part.NextDirection {
 			case DirectionUp:
 				part.Position.MoveUp(1)
@@ -128,7 +128,7 @@ func (s *Snake) Render() {
 		part := s.Parts[i]
 		face = 'o'
 		color := termbox.ColorYellow
-		termbox.SetCell(int(part.Position.X), int(part.Position.Y), face, color, termbox.ColorDefault)
+		termbox.SetCell(part.Position.X, part.Position.Y, face, color, termbox.ColorDefault)
 	}
 
 	color := termbox.ColorYellow
@@ -143,5 +143,5 @@ func (s *Snake) Render() {
 	case DirectionRight:
 		face = '>'
 	}
-	termbox.SetCell(int(head.Position.X), int(head.Position.Y), face, color, termbox.ColorDefault)
+	termbox.SetCell(head.Position.X, head.Position.Y, face, color, termbox.ColorDefault)
 }

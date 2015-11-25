@@ -42,6 +42,8 @@ func (g *Game) Run() {
 	g.init()
 	defer g.destroy()
 
+	fmt.Println("Welcome!")
+
 	go g.pollForEvents()
 	go g.handleEvents()
 	go g.runGameLoop()
@@ -73,18 +75,30 @@ func (g *Game) handleEvents() {
 	}
 }
 
+func nowSeconds() float64 {
+	return float64(time.Now().UnixNano()) / (1000 * 1000 * 1000)
+}
+
 func (g *Game) runGameLoop() {
-	pauseTime := time.Duration(1000/config.FPS) * time.Millisecond
 	for {
+		currentTime := nowSeconds()
+
 		g.world.Step()
+
 		termbox.Clear(termbox.ColorBlack, termbox.ColorBlack)
 		g.world.Render()
 		termbox.Flush()
-		time.Sleep(pauseTime)
+
+		// Cap FPS.
+		frameTime := (nowSeconds() - currentTime) * 1000000
+		// fmt.Println("stepping took microseconds", frameTime)
+		sleepTime := time.Duration(1000000.0/float64(config.TargetFPS)-frameTime) * time.Microsecond
+		// fmt.Println("sleeping for", sleepTime)
+		time.Sleep(sleepTime)
 	}
 }
 
 func (g *Game) waitForQuit() {
 	<-g.quitChan
-	fmt.Println("Bye!")
+	fmt.Println("Bye! ESC pressed.")
 }
